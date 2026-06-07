@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Your Travel Personality!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffd1dc, #c9e9ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #ff7eb3, #ff6584);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 40px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120"><path fill="%23ff7eb3" fill-opacity="1" d="M0,64L48,58.7C96,53,192,43,288,48C384,53,480,75,576,80C672,85,768,75,864,75C960,75,1056,85,1152,96C1248,107,1344,128,1392,133.3L1440,138L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></svg>');
+            background-size: cover;
+            z-index: -1;
+        }
+        
+        .quiz-container {
+            padding: 30px;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateY(-5px);
+        }
+        
+        .question-number {
+            font-size: 1.2rem;
+            color: #ff6584;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .question-number i {
+            margin-right: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+        
+        .option:hover {
+            background: #e9f7fe;
+            border-color: #4dabf7;
+        }
+        
+        .option.selected {
+            background: #d1ecff;
+            border-color: #4dabf7;
+            box-shadow: 0 0 10px rgba(77, 171, 247, 0.3);
+        }
+        
+        .option input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .option label {
+            font-size: 1.1rem;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        #submit-btn {
+            background: linear-gradient(to right, #ff7eb3, #ff6584);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 109, 131, 0.4);
+        }
+        
+        #submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 109, 131, 0.6);
+        }
+        
+        #submit-btn:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-container {
+            display: none;
+            padding: 30px;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-title {
+            font-size: 2rem;
+            color: #ff6584;
+            margin-bottom: 20px;
+        }
+        
+        .destination {
+            font-size: 3rem;
+            margin: 20px 0;
+            animation: bounce 1s infinite;
+        }
+        
+        .emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+            display: block;
+        }
+        
+        .description {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(to right, #4dabf7, #3bc9db);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+            
+            .option label {
+                font-size: 1rem;
+            }
+            
+            .destination {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-globe-americas"></i> Discover Your Travel Personality!</h1>
+            <p>Answer these fun questions to find your ideal vacation destination</p>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 1</div>
+                <div class="question-text">Your ideal Saturday looks like...</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1a" value="A">
+                        <label for="q1a">A. A day full of thrills and laughter</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1b" value="B">
+                        <label for="q1b">B. A day exploring a big city and its neighborhoods</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1c" value="C">
+                        <label for="q1c">C. A day soaking up the sun and enjoying the good weather</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1d" value="D">
+                        <label for="q1d">D. A day strolling through shops and cafés</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 2</div>
+                <div class="question-text">The photo you'd be most likely to post on Instagram would be...</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2a" value="A">
+                        <label for="q2a">A. A fun and unique moment</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2b" value="B">
+                        <label for="q2b">B. An iconic landmark</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2c" value="C">
+                        <label for="q2c">C. A view of the sea</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2d" value="D">
+                        <label for="q2d">D. A stylish street or a charming café</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 3</div>
+                <div class="question-text">When you travel, you prefer to...</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3a" value="A">
+                        <label for="q3a">A. Have fun above all else</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3b" value="B">
+                        <label for="q3b">B. Discover a new culture</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3c" value="C">
+                        <label for="q3c">C. Relax and switch off</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3d" value="D">
+                        <label for="q3d">D. Enjoy the local atmosphere and style</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 4</div>
+                <div class="question-text">Which gift would make you happiest?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4a" value="A">
+                        <label for="q4a">A. An unforgettable experience</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4b" value="B">
+                        <label for="q4b">B. A city break in a capital city</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4c" value="C">
+                        <label for="q4c">C. A few days in the sun</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4d" value="D">
+                        <label for="q4d">D. A guilt-free shopping spree</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 5</div>
+                <div class="question-text">Your vacation style is more...</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5a" value="A">
+                        <label for="q5a">A. Energetic and fun</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5b" value="B">
+                        <label for="q5b">B. Curious and adventurous</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5c" value="C">
+                        <label for="q5c">C. Relaxed and spontaneous</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5d" value="D">
+                        <label for="q5d">D. Trendy and food-loving</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-number"><i class="fas fa-question-circle"></i> Question 6</div>
+                <div class="question-text">If you could teleport anywhere right now, you would choose...</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6a" value="A">
+                        <label for="q6a">A. A place where everything feels magical</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6b" value="B">
+                        <label for="q6b">B. A city full of things to see</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6c" value="C">
+                        <label for="q6c">C. A destination with beaches and sunshine</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6d" value="D">
+                        <label for="q6d">D. A city famous for its elegance</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button id="submit-btn">Discover My Destination!</button>
+            </div>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2 class="result-title">Your Travel Personality</h2>
+            <div class="emoji" id="emoji">✨</div>
+            <div class="destination" id="destination">Disneyland Paris</div>
+            <p class="description" id="description">Based on your personality traits, you're a perfect match for this destination!</p>
+            <button class="restart-btn" id="restart-btn">Take Quiz Again</button>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ for my amazing sister | Travel Quiz</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitBtn = document.getElementById('submit-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const resultContainer = document.getElementById('result-container');
+            const emoji = document.getElementById('emoji');
+            const destination = document.getElementById('destination');
+            const description = document.getElementById('description');
+            const starsContainer = document.getElementById('stars');
+            
+            // Create background stars
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                starsContainer.appendChild(star);
+            }
+            
+            // Handle option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio && !radio.checked) {
+                        // Uncheck all options in this question
+                        const question = this.closest('.question');
+                        question.querySelectorAll('input[type="radio"]').forEach(radio => {
+                            radio.checked = false;
+                        });
+                        
+                        // Check the clicked option
+                        radio.checked = true;
+                        this.classList.add('selected');
+                        
+                        // Remove selected from other options in same question
+                        question.querySelectorAll('.option').forEach(opt => {
+                            if (opt !== this) {
+                                opt.classList.remove('selected');
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Submit button functionality
+            submitBtn.addEventListener('click', function() {
+                // Check if all questions are answered
+                let allAnswered = true;
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const selected = question.querySelector('input[type="radio"]:checked');
+                    if (!selected) {
+                        allAnswered = false;
+                    }
+                });
+                
+                if (!allAnswered) {
+                    alert('Please answer all questions before submitting!');
+                    return;
+                }
+                
+                // Calculate results
+                let aCount = 0, bCount = 0, cCount = 0, dCount = 0;
+                
+                const answers = document.querySelectorAll('input[type="radio"]:checked');
+                answers.forEach(answer => {
+                    switch(answer.value) {
+                        case 'A': aCount++; break;
+                        case 'B': bCount++; break;
+                        case 'C': cCount++; break;
+                        case 'D': dCount++; break;
+                    }
+                });
+                
+                // Determine result
+                let max = Math.max(aCount, bCount, cCount, dCount);
+                let result;
+                
+                if (max === aCount) {
+                    result = { 
+                        destination: "Disneyland Paris", 
+                        emoji: "🎢✨", 
+                        description: "Your energetic and fun personality makes you perfect for magical experiences! Disneyland Paris will give you the thrills and laughter you crave."
+                    };
+                } else if (max === bCount) {
+                    result = { 
+                        destination: "London", 
+                        emoji: "🇬🇧", 
+                        description: "Your curious and adventurous spirit means you'll love exploring the rich history and culture of London. It's a city full of things to see and discover!"
+                    };
+                } else if (max === cCount) {
+                    result = { 
+                        destination: "Palma de Mallorca", 
+                        emoji: "☀️🏖️", 
+                        description: "Your relaxed and spontaneous nature is perfectly matched with the sunny beaches and laid-back vibes of Palma de Mallorca. It's the perfect escape to recharge."
+                    };
+                } else {
+                    result = { 
+                        destination: "Milan", 
+                        emoji: "🇮🇹🛍️", 
+                        description: "Your trendy and food-loving personality makes Milan your ideal destination! You'll love its fashion scene, beautiful architecture, and incredible cuisine."
+                    };
+                }
+                
+                // Display results
+                emoji.textContent = result.emoji;
+                destination.textContent = result.destination;
+                description.textContent = result.description;
+                
+                // Hide quiz and show result
+                document.querySelector('.quiz-container').style.display = 'none';
+                resultContainer.style.display = 'block';
+                
+                // Scroll to result
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Restart button functionality
+            restartBtn.addEventListener('click', function() {
+                // Reset all selections
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Show quiz and hide result
+                document.querySelector('.quiz-container').style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
